@@ -89,12 +89,12 @@ module ActiveRecordExtended
         union_values:          Array,
         union_operations:      Array,
         union_ordering_values: Array,
-        unionized_name:        lambda { |klass| klass.arel_table.name }
+        unionized_name:        lambda { |arel_table| arel_table.name }
       }.each_pair do |method_name, default|
         define_method(method_name) do
           return unionize_storage[method_name] if send(:"#{method_name}?")
 
-          (default.is_a?(Proc) ? default.call(@klass) : default.new)
+          (default.is_a?(Proc) ? default.call(arel_table) : default.new)
         end
 
         define_method(:"#{method_name}?") do
